@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Strategist Impact Tracker</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff; --bg2: #f5f4f0; --bg3: #eeedea;
+  --text: #1a1a18; --text2: #5f5e5a; --text3: #888780;
+  --border: rgba(0,0,0,0.11); --border2: rgba(0,0,0,0.2);
+  --radius: 8px; --radius-lg: 12px;
+  --purple: #7F77DD; --purple-bg: #EEEDFE; --purple-text: #3C3489;
+  --teal: #1D9E75; --teal-bg: #E1F5EE; --teal-text: #085041;
+  --blue: #378ADD; --blue-bg: #E6F1FB; --blue-text: #0C447C;
+  --amber: #BA7517; --amber-bg: #FAEEDA; --amber-text: #633806;
+  --coral: #D85A30; --coral-bg: #FAECE7; --coral-text: #712B13;
+  --green: #639922; --green-bg: #EAF3DE; --green-text: #27500A;
+  --pink: #D4537E; --pink-bg: #FBEAF0; --pink-text: #72243E;
+  --gray-bg: #F1EFE8; --gray-text: #444441;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1c; --bg2: #2a2a27; --bg3: #333330;
+    --text: #f0ede8; --text2: #a8a59f; --text3: #6e6c68;
+    --border: rgba(255,255,255,0.11); --border2: rgba(255,255,255,0.2);
+    --purple-bg: #3C3489; --purple-text: #CECBF6;
+    --teal-bg: #085041; --teal-text: #9FE1CB;
+    --blue-bg: #0C447C; --blue-text: #B5D4F4;
+    --amber-bg: #633806; --amber-text: #FAC775;
+    --coral-bg: #712B13; --coral-text: #F5C4B3;
+    --green-bg: #27500A; --green-text: #C0DD97;
+    --pink-bg: #72243E; --pink-text: #F4C0D1;
+    --gray-bg: #444441; --gray-text: #D3D1C7;
+  }
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); font-size: 14px; line-height: 1.5; }
+.app { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.app-header { margin-bottom: 2rem; }
+.app-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.app-sub { font-size: 13px; color: var(--text3); display: flex; align-items: center; gap: 8px; }
+.cpill { font-size: 11px; background: var(--purple-bg); color: var(--purple-text); padding: 3px 10px; border-radius: 99px; font-weight: 500; }
+.tabs { display: flex; gap: 4px; margin-bottom: 1.75rem; background: var(--bg2); padding: 4px; border-radius: var(--radius-lg); width: fit-content; }
+.tab { padding: 6px 16px; border-radius: var(--radius); border: none; background: transparent; cursor: pointer; font-size: 13px; color: var(--text2); }
+.tab.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: 500; }
+.tab:hover:not(.active) { color: var(--text); }
+.panel { display: none; } .panel.active { display: block; }
+.slabel { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; margin-right: 4px; margin-bottom: 3px; }
+.t-blue{background:var(--blue-bg);color:var(--blue-text);}
+.t-teal{background:var(--teal-bg);color:var(--teal-text);}
+.t-amber{background:var(--amber-bg);color:var(--amber-text);}
+.t-purple{background:var(--purple-bg);color:var(--purple-text);}
+.t-coral{background:var(--coral-bg);color:var(--coral-text);}
+.t-gray{background:var(--gray-bg);color:var(--gray-text);}
+.t-green{background:var(--green-bg);color:var(--green-text);}
+.t-pink{background:var(--pink-bg);color:var(--pink-text);}
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+.mc { background: var(--bg2); border-radius: var(--radius); padding: 0.875rem 1rem; }
+.mc-lbl { font-size: 11px; color: var(--text2); margin-bottom: 3px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+.mc-val { font-size: 26px; font-weight: 500; color: var(--text); }
+.mc-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+input, select, textarea { width: 100%; padding: 8px 10px; font-size: 13px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-family: inherit; margin-bottom: 8px; outline: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(127,119,221,0.15); }
+textarea { resize: vertical; min-height: 64px; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+label.flbl { display: block; font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; margin-top: 4px; }
+.savebtn { background: var(--purple); border: none; border-radius: var(--radius); padding: 8px 20px; font-size: 13px; font-weight: 500; color: #fff; cursor: pointer; margin-top: 4px; }
+.savebtn:hover { opacity: 0.88; }
+.secbtn { background: var(--bg2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 7px 16px; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; }
+.secbtn:hover { border-color: var(--purple); color: var(--purple-text); }
+.delbtn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 18px; padding: 0 4px; line-height: 1; flex-shrink: 0; }
+.delbtn:hover { color: var(--text); }
+.qsel { display: flex; gap: 6px; flex-wrap: wrap; }
+.qbtn { padding: 5px 13px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; cursor: pointer; font-size: 12px; color: var(--text2); }
+.qbtn.sel { border-color: var(--purple); background: var(--purple-bg); color: var(--purple-text); font-weight: 500; }
+.q-section { margin-bottom: 2rem; }
+.q-hdr { display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+.qbadge { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 99px; }
+.qbc { background: var(--purple-bg); color: var(--purple-text); }
+.qbo { background: var(--bg2); color: var(--text2); }
+.erow { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+.erow:last-child { border-bottom: none; }
+.edot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.d-blue{background:var(--blue);} .d-teal{background:var(--teal);} .d-amber{background:var(--amber);}
+.d-purple{background:var(--purple);} .d-coral{background:var(--coral);} .d-green{background:var(--green);}
+.d-pink{background:var(--pink);} .d-gray{background:var(--text3);}
+.ec { flex: 1; min-width: 0; }
+.etitle { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+.edesc { font-size: 13px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+.emeta { font-size: 12px; color: var(--text2); margin-top: 5px; line-height: 1.8; }
+.equote { font-size: 12px; color: var(--text2); margin-top: 6px; font-style: italic; border-left: 2px solid var(--border2); padding-left: 10px; line-height: 1.5; }
+.brow { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.blbl { font-size: 12px; color: var(--text2); width: 210px; flex-shrink: 0; line-height: 1.3; }
+.btrack { flex: 1; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+.bfp { height: 100%; background: var(--purple); border-radius: 3px; }
+.bft { height: 100%; background: var(--teal); border-radius: 3px; }
+.bfa { height: 100%; background: var(--amber); border-radius: 3px; }
+.bval { font-size: 13px; font-weight: 500; color: var(--text); min-width: 22px; text-align: right; }
+.rblk { border-left: 2px solid var(--border2); padding-left: 1rem; margin-bottom: 1.25rem; }
+.rq { font-size: 12px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.ra { font-size: 13px; color: var(--text); line-height: 1.8; }
+.guide-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; margin-bottom: 0.75rem; }
+.guide-card p { font-size: 13px; color: var(--text2); line-height: 1.7; margin-top: 8px; }
+.accent-purple { border-left: 2px solid var(--purple); }
+.accent-teal { border-left: 2px solid var(--teal); }
+.sep { height: 1.5rem; }
+.hint { font-size: 12px; color: var(--text2); line-height: 1.5; padding: 8px 12px; background: var(--bg2); border-radius: var(--radius); margin-bottom: 12px; }
+.empty-state { font-size: 13px; color: var(--text3); padding: 12px 0; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="app-header">
+    <div class="app-title">Design strategist impact tracker</div>
+    <div class="app-sub">
+      <span>Influence, direction, thought leadership</span>
+      <span class="cpill" id="cur-q-lbl"></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('capture',this)">Capture</button>
+    <button class="tab" onclick="switchTab('measure',this)">Measure</button>
+    <button class="tab" onclick="switchTab('report',this)">Report</button>
+    <button class="tab" onclick="switchTab('guide',this)">Guide</button>
+  </div>
+
+  <!-- CAPTURE -->
+  <div class="panel active" id="panel-capture">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <span style="font-size:13px;color:var(--text2);">Logging to:</span>
+      <div class="qsel" id="cap-qs"></div>
+    </div>
+    <p class="hint">You don't need a metric. The move, who it reached, and what shifted — that's the record.</p>
+    <div class="card">
+
+      <label class="flbl">What happened</label>
+      <input type="text" id="f-title" placeholder="1 line — e.g. Reframed the product vision narrative for the leadership offsite" />
+
+      <label class="flbl">What changed because of it?</label>
+      <textarea id="f-outcome" placeholder="e.g. CPO adopted the framing in the Q3 all-hands. Team now uses outcomes language in roadmap reviews."></textarea>
+
+      <div class="frow">
+        <div>
+          <label class="flbl">Impact type</label>
+          <select id="f-itype">
+            <option value="">Select one</option>
+            <option>Shaped org or product direction</option>
+            <option>Introduced a framework, mental model or process</option>
+            <option>Aligned stakeholders across functions</option>
+            <option>Shifted a narrative or reframed a problem</option>
+            <option>Built cross-functional trust or partnership</option>
+            <option>Defined or influenced strategy</option>
+            <option>Grew capability in the org</option>
+            <option>External thought leadership</option>
+            <option>Sponsored or elevated someone</option>
+            <option>Prevented a strategic mistake</option>
+          </select>
+        </div>
+        <div>
+          <label class="flbl">Scale</label>
+          <select id="f-scale">
+            <option value="">Select one</option>
+            <option>Team</option>
+            <option>Cross-functional</option>
+            <option>Org-wide</option>
+            <option>Company</option>
+            <option>Industry / external</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="frow">
+        <div>
+          <label class="flbl">Who was influenced?</label>
+          <input type="text" id="f-who" placeholder="e.g. CPO, Eng leads, Design org" />
+        </div>
+        <div>
+          <label class="flbl">How? (the vehicle)</label>
+          <select id="f-vehicle">
+            <option value="">Select one</option>
+            <option>1:1 or advisory conversation</option>
+            <option>Workshop or facilitated session</option>
+            <option>Written artifact (doc, brief, memo)</option>
+            <option>Presentation or talk</option>
+            <option>Framework or tool I created</option>
+            <option>Cross-functional initiative I led</option>
+            <option>External speaking or writing</option>
+            <option>Mentorship or sponsorship</option>
+            <option>Strategic recommendation</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="flbl">Evidence or signal <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional — quote, decision made, artifact adopted)</span></label>
+      <textarea id="f-evidence" placeholder="e.g. 'This changed how I think about the problem.' — VP Design. Or: framework included in new hire onboarding deck."></textarea>
+
+      <label class="flbl">Metric <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional — only if you have one)</span></label>
+      <input type="text" id="f-metric" placeholder="e.g. 12 senior leaders attended, adopted by 3 product teams, cited in 2 strategy docs" />
+
+      <button class="savebtn" onclick="saveEntry()">Add entry</button>
+    </div>
+
+    <div class="sep"></div>
+    <p class="slabel">All entries by quarter</p>
+    <div id="entries-by-q"></div>
+  </div>
+
+  <!-- MEASURE -->
+  <div class="panel" id="panel-measure">
+    <p class="slabel">At a glance</p>
+    <div class="grid4" id="mgrid"></div>
+    <div class="sep"></div>
+    <p class="slabel">Entries per quarter</p>
+    <div id="m-qbars"></div>
+    <div class="sep"></div>
+    <p class="slabel">By impact type</p>
+    <div id="m-itbars"></div>
+    <div class="sep"></div>
+    <p class="slabel">By scale</p>
+    <div id="m-scbars"></div>
+    <div class="sep"></div>
+    <p class="slabel">By vehicle (how you showed up)</p>
+    <div id="m-vbars"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="panel" id="panel-report">
+    <p class="slabel">Talking points — select quarter</p>
+    <div class="qsel" id="rep-qs" style="margin-bottom:1.25rem;"></div>
+    <div id="rep-out"></div>
+    <div class="sep"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="secbtn" onclick="copyReport()">Copy talking points</button>
+      <button class="secbtn" onclick="copyPromo()">Copy promo prompt for Claude ↗</button>
+    </div>
+  </div>
+
+  <!-- GUIDE -->
+  <div class="panel" id="panel-guide">
+    <p class="slabel">Tracking impact as a design strategist</p>
+    <div class="guide-card accent-purple">
+      <div><span class="tag t-purple">The shift</span></div>
+      <p>You're no longer tracking studies delivered. You're tracking <strong>direction shaped, people moved, and thinking that stuck</strong>. The unit of impact is not a research report — it's a decision that went differently, a narrative that changed, a framework that got adopted.</p>
+    </div>
+    <div class="guide-card">
+      <div><span class="tag t-blue">What to capture instead of metrics</span></div>
+      <p><strong>Quotes</strong> — what did someone say after your session, doc, or conversation? Paste it verbatim.<br><br>
+      <strong>Decisions</strong> — what got decided differently because of your input?<br><br>
+      <strong>Adoption</strong> — what framework, language, or artifact got picked up and used by others?<br><br>
+      <strong>Reach</strong> — who was in the room? How senior? How many functions?</p>
+    </div>
+    <div class="guide-card">
+      <div><span class="tag t-teal">Vehicles that signal seniority</span></div>
+      <p>At this level, <em>how</em> you show up matters as much as what you do. A 1:1 advisory conversation that changes a VP's thinking is high-leverage. A framework adopted across three teams is high-leverage. A talk at an industry event builds external credibility. Track these explicitly — they're the signal that you're operating as a strategist, not a practitioner.</p>
+    </div>
+    <div class="guide-card accent-teal">
+      <div><span class="tag t-teal">Strategist promotion signal</span></div>
+      <p>Watch your scale distribution in Measure. Cross-functional, Org-wide, and Company entries should be growing. Also watch your impact types — <strong>Shaped direction</strong>, <strong>Defined strategy</strong>, and <strong>Shifted narrative</strong> are the ones that most clearly separate strategist from senior practitioner.</p>
+    </div>
+    <div class="guide-card">
+      <div><span class="tag t-amber">The 3-layer report</span></div>
+      <p><strong>Executive (30 sec):</strong> "I shaped three strategic pivots and introduced a framework now used across the org."<br><br>
+      <strong>Peer (3 min):</strong> The specific moments — who, what shifted, what was decided.<br><br>
+      <strong>Evidence (on request):</strong> The doc, the deck, the quote, the Slack thread. Build this library as you go.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QS=[{key:'Q1',label:'Q1',months:'Feb – Apr',m:[2,3,4]},{key:'Q2',label:'Q2',months:'May – Jul',m:[5,6,7]},{key:'Q3',label:'Q3',months:'Aug – Oct',m:[8,9,10]},{key:'Q4',label:'Q4',months:'Nov – Jan',m:[11,12,1]}];
+const ITYPES=['Shaped org or product direction','Introduced a framework, mental model or process','Aligned stakeholders across functions','Shifted a narrative or reframed a problem','Built cross-functional trust or partnership','Defined or influenced strategy','Grew capability in the org','External thought leadership','Sponsored or elevated someone','Prevented a strategic mistake'];
+const SCALES=['Team','Cross-functional','Org-wide','Company','Industry / external'];
+const VEHICLES=['1:1 or advisory conversation','Workshop or facilitated session','Written artifact (doc, brief, memo)','Presentation or talk','Framework or tool I created','Cross-functional initiative I led','External speaking or writing','Mentorship or sponsorship','Strategic recommendation','Other'];
+const ITCOL={'Shaped org or product direction':'purple','Introduced a framework, mental model or process':'blue','Aligned stakeholders across functions':'teal','Shifted a narrative or reframed a problem':'coral','Built cross-functional trust or partnership':'green','Defined or influenced strategy':'purple','Grew capability in the org':'amber','External thought leadership':'pink','Sponsored or elevated someone':'teal','Prevented a strategic mistake':'coral'};
+
+function getCurQ(){const m=new Date().getMonth()+1;return QS.find(q=>q.m.includes(m))?.key||'Q1';}
+const curQ=getCurQ();
+let selCap=curQ,selRep=curQ;
+let entries=JSON.parse(localStorage.getItem('ds_entries')||'[]');
+
+document.getElementById('cur-q-lbl').textContent='Currently '+curQ+' · '+QS.find(q=>q.key===curQ).months;
+
+function persist(){localStorage.setItem('ds_entries',JSON.stringify(entries));}
+
+function buildQSel(id,sel,fn){
+  document.getElementById(id).innerHTML=QS.map(q=>`<button class="qbtn ${q.key===sel?'sel':''}" onclick="${fn}('${q.key}')">${q.label} <span style="font-size:11px;opacity:0.7;">${q.months}</span>${q.key===curQ?' ●':''}</button>`).join('');
+}
+function setCapQ(k){selCap=k;buildQSel('cap-qs',selCap,'setCapQ');}
+function setRepQ(k){selRep=k;buildQSel('rep-qs',selRep,'setRepQ');renderReport();}
+buildQSel('cap-qs',selCap,'setCapQ');
+buildQSel('rep-qs',selRep,'setRepQ');
+
+function switchTab(t,btn){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(e=>e.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='measure')renderMeasure();
+  if(t==='report'){buildQSel('rep-qs',selRep,'setRepQ');renderReport();}
+}
+
+function saveEntry(){
+  const title=document.getElementById('f-title').value.trim();
+  if(!title){alert('Add a one-line description of what happened.');return;}
+  entries.unshift({id:Date.now(),quarter:selCap,title,outcome:document.getElementById('f-outcome').value.trim(),itype:document.getElementById('f-itype').value,scale:document.getElementById('f-scale').value,who:document.getElementById('f-who').value.trim(),vehicle:document.getElementById('f-vehicle').value,evidence:document.getElementById('f-evidence').value.trim(),metric:document.getElementById('f-metric').value.trim()});
+  ['f-itype','f-scale','f-vehicle'].forEach(id=>document.getElementById(id).value='');
+  ['f-title','f-outcome','f-who','f-evidence','f-metric'].forEach(id=>document.getElementById(id).value='');
+  persist();renderEntries();
+}
+
+function deleteEntry(id){entries=entries.filter(e=>e.id!==id);persist();renderEntries();}
+
+function eRow(e){
+  const col=ITCOL[e.itype]||'gray';
+  return `<div class="erow">
+    <div class="edot d-${col}"></div>
+    <div class="ec">
+      <div class="etitle">${e.title}</div>
+      ${e.outcome?`<div class="edesc">${e.outcome}</div>`:''}
+      <div class="emeta">
+        ${e.itype?`<span class="tag t-${col}">${e.itype}</span>`:''}
+        ${e.scale?`<span class="tag t-gray">${e.scale}</span>`:''}
+        ${e.vehicle?`<span class="tag t-gray">${e.vehicle}</span>`:''}
+        ${e.who?`<br><span style="font-size:11px;color:var(--text3);">→ ${e.who}</span>`:''}
+        ${e.metric?`<span style="font-size:11px;color:var(--text3);margin-left:6px;">· ${e.metric}</span>`:''}
+      </div>
+      ${e.evidence?`<div class="equote">${e.evidence}</div>`:''}
+    </div>
+    <button class="delbtn" onclick="deleteEntry(${e.id})">×</button>
+  </div>`;
+}
+
+function renderEntries(){
+  document.getElementById('entries-by-q').innerHTML=QS.map(q=>{
+    const qe=entries.filter(e=>e.quarter===q.key);
+    const isCur=q.key===curQ;
+    return `<div class="q-section">
+      <div class="q-hdr">
+        <span class="qbadge ${isCur?'qbc':'qbo'}">${q.label}</span>
+        <span style="font-size:13px;color:var(--text2);">${q.months}</span>
+        ${isCur?'<span style="font-size:11px;color:var(--purple);font-weight:500;">current</span>':''}
+        <span style="margin-left:auto;font-size:12px;color:var(--text3);">${qe.length} ${qe.length===1?'entry':'entries'}</span>
+      </div>
+      <div class="card" style="padding:0.25rem 1rem;">
+        ${qe.length?qe.map(eRow).join(''):'<p class="empty-state">No entries yet.</p>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function bar(label,n,total,cls){
+  const pct=total>0?Math.round(n/total*100):0;
+  return `<div class="brow"><span class="blbl">${label}</span><div class="btrack"><div class="${cls}" style="width:${pct}%"></div></div><span class="bval">${n}</span></div>`;
+}
+
+function renderMeasure(){
+  const total=entries.length;
+  const broad=entries.filter(e=>['Cross-functional','Org-wide','Company','Industry / external'].includes(e.scale)).length;
+  const strategic=entries.filter(e=>['Shaped org or product direction','Defined or influenced strategy','Shifted a narrative or reframed a problem'].includes(e.itype)).length;
+  const curCount=entries.filter(e=>e.quarter===curQ).length;
+  document.getElementById('mgrid').innerHTML=`
+    <div class="mc"><div class="mc-lbl">Total entries</div><div class="mc-val">${total}</div><div class="mc-sub">all quarters</div></div>
+    <div class="mc"><div class="mc-lbl">${curQ} entries</div><div class="mc-val">${curCount}</div><div class="mc-sub">this quarter</div></div>
+    <div class="mc"><div class="mc-lbl">Broad scale</div><div class="mc-val">${broad}</div><div class="mc-sub">cross-fn, org+, external</div></div>
+    <div class="mc"><div class="mc-lbl">Strategic moves</div><div class="mc-val">${strategic}</div><div class="mc-sub">direction, strategy, narrative</div></div>`;
+  document.getElementById('m-qbars').innerHTML=QS.map(q=>{
+    const n=entries.filter(e=>e.quarter===q.key).length;
+    const pct=total>0?Math.round(n/total*100):0;
+    return `<div class="brow"><span class="blbl" style="display:flex;align-items:center;gap:6px;"><span class="qbadge ${q.key===curQ?'qbc':'qbo'}" style="font-size:11px;padding:2px 8px;">${q.key}</span><span style="font-size:12px;color:var(--text2);">${q.months}</span></span><div class="btrack"><div class="bfp" style="width:${pct}%"></div></div><span class="bval">${n}</span></div>`;
+  }).join('');
+  const itMap={};entries.forEach(e=>{if(e.itype)itMap[e.itype]=(itMap[e.itype]||0)+1;});
+  document.getElementById('m-itbars').innerHTML=ITYPES.map(k=>bar(k,itMap[k]||0,total,'bfp')).join('');
+  const scMap={};entries.forEach(e=>{if(e.scale)scMap[e.scale]=(scMap[e.scale]||0)+1;});
+  document.getElementById('m-scbars').innerHTML=SCALES.map(k=>bar(k,scMap[k]||0,total,'bft')).join('');
+  const vMap={};entries.forEach(e=>{if(e.vehicle)vMap[e.vehicle]=(vMap[e.vehicle]||0)+1;});
+  const activeV=VEHICLES.filter(k=>vMap[k]>0);
+  document.getElementById('m-vbars').innerHTML=activeV.length?activeV.map(k=>bar(k,vMap[k]||0,total,'bfa')).join(''):'<p class="empty-state">No data yet.</p>';
+}
+
+function renderReport(){
+  const el=document.getElementById('rep-out');
+  const qe=entries.filter(e=>e.quarter===selRep);
+  const qInfo=QS.find(q=>q.key===selRep);
+  if(!qe.length){el.innerHTML=`<p class="empty-state">No entries for ${selRep} yet.</p>`;return;}
+  const direction=qe.filter(e=>['Shaped org or product direction','Defined or influenced strategy','Shifted a narrative or reframed a problem'].includes(e.itype));
+  const frameworks=qe.filter(e=>e.itype==='Introduced a framework, mental model or process');
+  const alignment=qe.filter(e=>['Aligned stakeholders across functions','Built cross-functional trust or partnership'].includes(e.itype));
+  const capability=qe.filter(e=>['Grew capability in the org','Sponsored or elevated someone'].includes(e.itype));
+  const external=qe.filter(e=>e.itype==='External thought leadership');
+  const withEvidence=qe.filter(e=>e.evidence);
+  const broad=qe.filter(e=>['Cross-functional','Org-wide','Company','Industry / external'].includes(e.scale));
+  let html=`<p style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;"><strong>${selRep}</strong> · ${qInfo.months} — ${qe.length} entries</p>`;
+  html+=`<div class="rblk"><div class="rq">Direction & strategy</div><div class="ra">${direction.length?direction.map(e=>`• ${e.title}${e.outcome?'<br><span style="color:var(--text2);padding-left:10px;display:block;">→ '+e.outcome+'</span>':''}`).join(''):'No entries yet.'}</div></div>`;
+  html+=`<div class="rblk"><div class="rq">Frameworks & mental models</div><div class="ra">${frameworks.length?frameworks.map(e=>`• ${e.title}${e.who?' — reached '+e.who:''}`).join('<br>'):'No entries yet.'}</div></div>`;
+  html+=`<div class="rblk"><div class="rq">Stakeholder alignment & cross-functional influence</div><div class="ra">${alignment.length?alignment.map(e=>`• ${e.title}${e.who?' ('+e.who+')':''}`).join('<br>'):'No entries yet.'}</div></div>`;
+  html+=`<div class="rblk"><div class="rq">Capability & people grown</div><div class="ra">${capability.length?capability.map(e=>`• ${e.title}`).join('<br>'):'No entries yet.'}</div></div>`;
+  if(external.length)html+=`<div class="rblk"><div class="rq">External thought leadership</div><div class="ra">${external.map(e=>`• ${e.title}${e.metric?' — '+e.metric:''}`).join('<br>')}</div></div>`;
+  html+=`<div class="rblk"><div class="rq">Broad-scale impact</div><div class="ra">${broad.length?broad.map(e=>`• ${e.title} <span style="color:var(--text3);">(${e.scale})</span>`).join('<br>'):'No broad-scale entries yet.'}</div></div>`;
+  html+=`<div class="rblk"><div class="rq">Evidence & voices</div><div class="ra">${withEvidence.length?withEvidence.map(e=>`• ${e.evidence}`).join('<br>'):'No evidence captured yet — add quotes or signals in entries.'}</div></div>`;
+  el.innerHTML=html;
+}
+
+function buildPlainReport(q){
+  const qe=entries.filter(e=>e.quarter===q);
+  const qInfo=QS.find(x=>x.key===q);
+  if(!qe.length)return `No entries for ${q}.`;
+  const direction=qe.filter(e=>['Shaped org or product direction','Defined or influenced strategy','Shifted a narrative or reframed a problem'].includes(e.itype));
+  const frameworks=qe.filter(e=>e.itype==='Introduced a framework, mental model or process');
+  const alignment=qe.filter(e=>['Aligned stakeholders across functions','Built cross-functional trust or partnership'].includes(e.itype));
+  const capability=qe.filter(e=>['Grew capability in the org','Sponsored or elevated someone'].includes(e.itype));
+  const external=qe.filter(e=>e.itype==='External thought leadership');
+  const withEvidence=qe.filter(e=>e.evidence);
+  const broad=qe.filter(e=>['Cross-functional','Org-wide','Company','Industry / external'].includes(e.scale));
+  let txt=`DESIGN STRATEGIST IMPACT — ${q} (${qInfo.months})\n\n`;
+  txt+=`DIRECTION & STRATEGY\n${direction.length?direction.map(e=>`• ${e.title}${e.outcome?'\n  → '+e.outcome:''}`).join('\n'):'—'}\n\n`;
+  txt+=`FRAMEWORKS & MENTAL MODELS\n${frameworks.length?frameworks.map(e=>`• ${e.title}${e.who?' — reached '+e.who:''}`).join('\n'):'—'}\n\n`;
+  txt+=`STAKEHOLDER ALIGNMENT\n${alignment.length?alignment.map(e=>`• ${e.title}${e.who?' ('+e.who+')':''}`).join('\n'):'—'}\n\n`;
+  txt+=`CAPABILITY & PEOPLE GROWN\n${capability.length?capability.map(e=>`• ${e.title}`).join('\n'):'—'}\n\n`;
+  if(external.length)txt+=`EXTERNAL THOUGHT LEADERSHIP\n${external.map(e=>`• ${e.title}`).join('\n')}\n\n`;
+  txt+=`BROAD-SCALE IMPACT\n${broad.length?broad.map(e=>`• ${e.title} (${e.scale})`).join('\n'):'—'}\n\n`;
+  txt+=`EVIDENCE & VOICES\n${withEvidence.length?withEvidence.map(e=>`• ${e.evidence}`).join('\n'):'—'}`;
+  return txt;
+}
+
+function copyReport(){navigator.clipboard.writeText(buildPlainReport(selRep)).then(()=>alert('Copied!')).catch(()=>alert('Copy failed — try selecting manually.'));}
+
+function copyPromo(){
+  const allText=entries.map(e=>`[${e.quarter}] ${e.itype||''} | ${e.title}${e.outcome?' | '+e.outcome:''} | scale:${e.scale||'?'} | who:${e.who||'?'} | evidence:${e.evidence||'none'}`).join('\n');
+  const prompt=`I'm building my promotion case as a Design Strategist (transitioning from Principal UXR). Based on this impact log, write a compelling 3–4 paragraph promotion narrative that emphasises strategic influence, direction-setting, stakeholder alignment, and thought leadership. Do not frame me as a researcher.\n\nIMPACT LOG:\n${allText}`;
+  navigator.clipboard.writeText(prompt).then(()=>alert('Promo prompt copied — paste into Claude to generate your narrative.')).catch(()=>alert('Copy failed.'));
+}
+
+renderEntries();
+</script>
+</body>
+</html>
