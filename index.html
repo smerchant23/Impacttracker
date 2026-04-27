@@ -283,7 +283,7 @@ const ITCOL={'Shaped org or product direction':'purple','Introduced a framework,
 function getCurQ(){const m=new Date().getMonth()+1;return QS.find(q=>q.m.includes(m))?.key||'Q1';}
 const curQ=getCurQ();
 let selCap=curQ,selRep=curQ;
-let entries=JSON.parse(localStorage.getItem('ds_entries')||'[]');
+let entries=JSON.parse(localStorage.getItem('ds_entries')||'[{"id":1740000002000,"quarter":"Q1","title":"UMUX internal EF launch","outcome":"Measuring UMUX Lite - Usability. First time measuring Usability quantitatively across a single product line - AI Interviewer.","itype":"Introduced a framework, mental model or process","scale":"Org-wide","who":"Design","vehicle":"Strategic recommendation","evidence":"Will eventually feed into how we think about shaping UX at EF. Quantitative metric on Usability.","metric":""},{"id":1740000001000,"quarter":"Q1","title":"Walkthroughs with Recruiters revealed the need for Highlight Reels - shorter video snippets that would enable recruiters to quickly get a pulse on a candidate","outcome":"Conversations with Engg on feasibility. Design already working on this idea/concept.","itype":"Defined or influenced strategy","scale":"Company","who":"Product, Design","vehicle":"Strategic recommendation","evidence":"This will change how recruiters actually consume information especially for High Volume Hiring","metric":""}]');
 
 document.getElementById('cur-q-lbl').textContent='Currently '+curQ+' · '+QS.find(q=>q.key===curQ).months;
 
